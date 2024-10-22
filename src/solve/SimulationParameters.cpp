@@ -215,6 +215,7 @@ SimulationParameters load_simulation_params(const nlohmann::json& config) {
   sim_params.output_mean_only = sim_config.value("output_mean_only", false);
   sim_params.output_derivative = sim_config.value("output_derivative", false);
   sim_params.output_all_cycles = sim_config.value("output_all_cycles", false);
+  sim_params.sim_cardiac_period = sim_config.value("cardiac_period", -1.0);
   DEBUG_MSG("Finished loading simulation parameters");
   return sim_params;
 }

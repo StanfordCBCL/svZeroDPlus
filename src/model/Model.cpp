@@ -202,9 +202,9 @@ void Model::finalize() {
     block->setup_model_dependent_params();
   }
 
-  if (cardiac_cycle_period < 0.0) {
-    cardiac_cycle_period = 1.0;
-  }
+  // if (cardiac_cycle_period < 0.0) {
+  //   cardiac_cycle_period = 1.0;
+  // }
 }
 
 int Model::get_num_blocks(bool internal) const {
