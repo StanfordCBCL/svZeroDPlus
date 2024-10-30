@@ -121,3 +121,22 @@ def test_pulsatile_flow_r_rcr_mean_derivative_variable():
             rt = np.mean(np.gradient(res_time[f + "_" + k], dt))
             rm = res_mean["ydot"][res_mean["name"] == f + ":" + v]
             assert np.isclose(rt, rm, atol=ATOL_MEAN[f[0]])
+
+
+def test_time_dependent_block():
+    # time-dependent results
+    res_flow = run_test_case_by_name("timeDep_Flow", output_variable_based=True)
+    res_press = run_test_case_by_name("timeDep_Pressure", output_variable_based=True)
+
+    time = res_flow["time"][res_flow["name"] == "flow:INLET:branch0_seg0"].to_numpy()
+    flow = res_flow["y"][res_flow["name"] == "flow:INLET:branch0_seg0"].to_numpy()
+    pressure = res_press["y"][res_press["name"] == "pressure:INLET:branch0_seg0"].to_numpy()
+
+    # compare time-dependent results to the calculated values
+    for i, t in enumerate(time):
+        # may be unsteady at the beginning
+        if i < 15:
+            continue
+        calc_val = 2.0 * (4*np.arctan(1.)) * np.cos(2.0 * (4*np.arctan(1.)) * t)
+        assert np.isclose(flow[i], calc_val, rtol=0.003)
+        assert np.isclose(pressure[i], calc_val, rtol=0.003)

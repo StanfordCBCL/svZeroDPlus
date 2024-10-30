@@ -31,6 +31,9 @@
 cmake_minimum_required(VERSION 3.22)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_EXTENSIONS         OFF)
+set(CMAKE_VERBOSE_MAKEFILE        ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 project(svZeroDSolver)
 
@@ -55,6 +58,32 @@ if(ENABLE_COVERAGE)
     # generate report
     COMMAND ${GENHTML} --demangle-cpp -o coverage coverage.info
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+endif()
+
+# Enable sanitizer build
+# -----------------------------------------------------------------------------
+set(ENABLE_SANITIZERS OFF CACHE BOOL "Enable sanitizer build")
+if ((ENABLE_SANITIZERS) AND (CMAKE_BUILD_TYPE STREQUAL "Debug"))
+  message("Enabling sanitizers: ASAN, LSAN, USAN")
+
+  add_compile_options( -fsanitize=address      )
+  add_compile_options( -fsanitize=leak         )
+  add_compile_options( -fsanitize=undefined    )
+  add_compile_options( -fno-omit-frame-pointer )
+
+  add_link_options   ( -fsanitize=address      )
+  add_link_options   ( -fsanitize=leak         )
+  add_link_options   ( -fsanitize=undefined    )
+  add_link_options   ( -fno-omit-frame-pointer )
+
+  # add_compile_options( -fsanitize=memory               )
+  # add_compile_options( -fsanitize-memory-track-origins )
+  # add_compile_options( -fsanitize=fuzzer-no-link       )
+  # add_link_options   ( -fsanitize=memory               )
+  # add_link_options   ( -fsanitize-memory-track-origins )
+  # add_link_options   ( -fsanitize=fuzzer-no-link       )
+
+  #set(CMAKE_EXE_LINKER_FLAGS -fuse-ld=gold)
 endif()
 
 # -----------------------------------------------------------------------------

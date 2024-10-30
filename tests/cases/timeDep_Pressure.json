@@ -1,0 +1,52 @@
+{
+    "description": {
+            "description of test case" : "pulsatile pressure -> Blood Vessel -> R",
+            "analytical results" : [
+                                        "Boundary conditions:",
+                                            "inlet:",
+                                                "Pressure = 2*pi*cos(2*pi*t)",
+                                            "outlet:",
+                                                "Resistance: R = 1000, Pd = 0"
+                                   ]
+    },
+    "boundary_conditions": [
+        {
+            "bc_name": "INLET",
+            "bc_type": "PRESSURE",
+            "bc_values": {
+                "fn": "2.0 * (4*ATAN(1.)) * COS(2.0 * (4*ATAN(1.)) * t)"
+            }
+        },
+        {
+            "bc_name": "OUTLET",
+            "bc_type": "RESISTANCE",
+            "bc_values": {
+                "Pd": 0.0,
+                "R": 1000.0
+            }
+        }
+    ],
+    "junctions": [],
+    "simulation_parameters": {
+        "number_of_cardiac_cycles": 3,
+        "number_of_time_pts_per_cardiac_cycle": 100,
+        "output_all_cycles": true,
+        "output_variable_based":true
+    },
+    "vessels": [
+        {
+            "boundary_conditions": {
+                "inlet": "INLET",
+                "outlet": "OUTLET"
+            },
+            "vessel_id": 0,
+            "vessel_length": 10.0,
+            "vessel_name": "branch0_seg0",
+            "zero_d_element_type": "BloodVessel",
+            "zero_d_element_values": {
+                "C": 0.0001,
+                "R_poiseuille": 100.0
+            }
+        }
+    ]
+}

@@ -32,8 +32,8 @@
 
 template <typename block_type>
 BlockFactoryFunc block_factory() {
-  return [](int count, Model *model) -> Block * {
-    return new block_type(count, model);
+  return [](int count, Model *model) -> std::shared_ptr<Block> {
+    return std::make_shared<block_type>(count, model);
   };
 }
 
@@ -60,17 +60,17 @@ Model::Model() {
 
 Model::~Model() {}
 
-Block *Model::create_block(const std::string &block_type) {
+std::shared_ptr<Block> Model::create_block(const std::string &block_type) {
   // Get block from factory
   auto it = block_factory_map.find(block_type);
   if (it == block_factory_map.end()) {
     throw std::runtime_error("Invalid block type " + block_type);
   }
-  Block *block = it->second(block_count, this);
+  std::shared_ptr<Block> block = it->second(block_count, this);
   return block;
 }
 
-int Model::add_block(Block *block, const std::string_view &name,
+int Model::add_block(std::shared_ptr<Block> block, const std::string_view &name,
                      const std::vector<int> &block_param_ids, bool internal) {
   // Set global parameter IDs
   block->setup_params_(block_param_ids);
@@ -78,9 +78,9 @@ int Model::add_block(Block *block, const std::string_view &name,
   auto name_string = static_cast<std::string>(name);
 
   if (internal) {
-    hidden_blocks.push_back(std::shared_ptr<Block>(block));
+    hidden_blocks.push_back(block);
   } else {
-    blocks.push_back(std::shared_ptr<Block>(block));
+    blocks.push_back(block);
   }
 
   block_types.push_back(block->block_type);
@@ -173,6 +173,13 @@ int Model::add_parameter(const std::vector<double> &times,
     }
     this->cardiac_cycle_period = param.cycle_period;
   }
+  parameter_values.push_back(param.get(0.0));
+  parameters.push_back(std::move(param));
+  return parameter_count++;
+}
+
+int Model::add_parameter(const std::string expression_string) {
+  auto param = Parameter(parameter_count, expression_string);
   parameter_values.push_back(param.get(0.0));
   parameters.push_back(std::move(param));
   return parameter_count++;

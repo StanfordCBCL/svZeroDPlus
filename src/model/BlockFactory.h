@@ -42,6 +42,6 @@
 /**
  * @brief General functional for the creation of different types of blocks
  */
-using BlockFactoryFunc = std::function<Block*(int, Model*)>;
+using BlockFactoryFunc = std::function<std::shared_ptr<Block>(int, Model*)>;
 
 #endif

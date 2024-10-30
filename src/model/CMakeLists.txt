@@ -87,6 +87,7 @@ target_include_directories( ${lib} PUBLIC
   ${CMAKE_SOURCE_DIR}/src/algebra
   ${CMAKE_SOURCE_DIR}/src/model
   ${CMAKE_SOURCE_DIR}/src/solve
+  ${CMAKE_SOURCE_DIR}/src/ThirdParty
 )
 
 target_link_libraries( ${lib} Eigen3::Eigen )

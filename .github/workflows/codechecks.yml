@@ -1,6 +1,6 @@
 # This workflow checks for compliance with the Google C++ style guide.
 name: Codechecks
-on: [push, pull_request]
+on: [pull_request]
 jobs:
   clang-format:
     runs-on: ubuntu-latest
